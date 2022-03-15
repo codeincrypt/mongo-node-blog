@@ -1,0 +1,4 @@
+USERNAME = your_user_name
+PASSWORD = your_password
+CLUSTER = your_cluster
+DBNAME = your_database
