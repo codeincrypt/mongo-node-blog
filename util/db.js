@@ -1,24 +1,37 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 
+var db
+var uri
+var options
+
 const username = encodeURIComponent(process.env.UNAME);
 const password = encodeURIComponent(process.env.PASSWORD);
 const cluster = process.env.CLUSTER;
 const dbname = process.env.DBNAME;
 
-const uri = `mongodb+srv://${username}:${password}@${cluster}/${dbname}`;
-console.log('uri', process.env.USERNAME, uri)
-const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
+const SERVER = "localhost"
+// const SERVER = "live"
+
+if(SERVER === 'localhost'){
+  uri = `mongodb://localhost:27017/${dbname}`;
+  options = {
+    useNewUrlParser: true
+  }
+
+} else {  
+  uri = `mongodb+srv://${username}:${password}@${cluster}/${dbname}`;
+  options = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  }
+  
 }
-
-var db
-
 mongoose.connect(uri, options)
-.then(() => {
+.then(async(resp) => {
   db = mongoose.connection
-  console.log('Mondo DB Connected Successfully')
+  // const asasa = await resp
+  console.log('Mondo DB Connected Successfully ')
 })
 .catch((err) => {
   db = err;

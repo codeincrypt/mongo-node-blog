@@ -4,12 +4,27 @@ const moment = require('moment-timezone');
 const mongoose = require('mongoose');
 
 const blogSchema = require('../schema/blogs');
-const db = require('../util/db');
-
 const Blogs = mongoose.model('blogs', blogSchema);
+
+const db = require('../util/db')
 
 moment().tz("Asia/Calcutta").format();
 process.env.TZ = 'Asia/Calcutta';
+
+// SEARCH DATA
+router.get('/search-blog/:query', (req, res) => {
+  var query = req.params.query
+  Blogs.find({title: query}, (err, data) => {
+    if(err){
+      return res.status(400).json({status: 0, message: err.message});
+    }
+    if(data === null || data.length > 0){
+      res.json(data);
+    } else {
+      res.json({status: 0, message: "No data found"});
+    }
+  });
+})
 
 // GET ALL DATA
 router.get('/blog', async (req, res) => {
@@ -18,7 +33,11 @@ router.get('/blog', async (req, res) => {
       console.log('err', err);
       return res.status(400).json({status: 0, message: err.message});
     }
-    res.json(data);
+    if(data.length > 0){
+      res.json(data);
+    } else {
+      res.json({status: 0, message: "No data found"});
+    }
   });
 })
 
@@ -30,7 +49,11 @@ router.get('/blog/:id', async (req, res) => {
       console.log('err', err);
       return res.status(400).json({status: 0, message: err.message});
     }
-    res.json(data);
+    if(data === null){
+      return res.json({status: 0, message: "Invalid id"});
+    } else {
+      res.json(data);
+    }
   });
 })
 
@@ -77,3 +100,7 @@ router.post('/update-blog', async (req, res) => {
 })
 
 module.exports = router
+
+
+
+
