@@ -12,18 +12,41 @@ moment().tz("Asia/Calcutta").format();
 process.env.TZ = 'Asia/Calcutta';
 
 // SEARCH DATA
-router.get('/search-blog/:query', (req, res) => {
-  var query = req.params.query
-  Blogs.find({title: query}, (err, data) => {
+router.post('/search-blog', async (req, res) => {
+  var {query} = req.body
+  // Blogs.find({desc : { $regex: `.*${query}.*`, $options: 'i'}, title : { $regex: `.*${query}.*`, $options: 'i'}}, (err, data) => {
+  //   console.log('data', data)
+  //   if(err){
+  //     return res.status(400).json({status: 0, message: err.message});
+  //   }
+  //   if(data !== null || data.length > 0){
+  //     res.json(data);
+  //   } else {
+  //     res.json({status: 0, message: "No data found"});
+  //   }
+  // });
+
+  var regexdata = new RegExp(query, 'i');
+
+  Blogs.find().or([{ 'title': { $regex: regexdata }}, { 'desc': { $regex: regexdata }}]).sort('title').exec((err, data) => {
     if(err){
       return res.status(400).json({status: 0, message: err.message});
     }
-    if(data === null || data.length > 0){
+    if(data !== null || data.length > 0){
       res.json(data);
     } else {
       res.json({status: 0, message: "No data found"});
     }
   });
+
+  // try {
+  //   const docs = await Blogs.find({desc : { $regex: `.*${query}.*`, $options: 'i'}});
+  //   console.log('docs', docs);
+  //   res.json(docs);
+  // } catch (err) {
+  //   console.log(err);
+  // }
+
 })
 
 // GET ALL DATA
@@ -46,7 +69,6 @@ router.get('/blog/:id', async (req, res) => {
   var id = req.params.id;
   Blogs.findOne({_id: id}).exec((err, data) => {
     if(err){
-      console.log('err', err);
       return res.status(400).json({status: 0, message: err.message});
     }
     if(data === null){

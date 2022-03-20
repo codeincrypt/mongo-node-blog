@@ -5,12 +5,14 @@ const app = express()
 const PORT = process.env.PORT || 4000;
 
 const homeRoute = require('./routes/main')
+const authAdminRoute = require('./routes/authadmin')
 
 app.use(cors())
 app.use(express.json())
 app.use(express.static('public'));
 
 app.use('/main', homeRoute)
+app.use('/authadmin', authAdminRoute)
 
 app.get('/', (req, res) => {
     res.header("Access-Control-Allow-Origin", "*");
