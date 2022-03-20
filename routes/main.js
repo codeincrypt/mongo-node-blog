@@ -79,48 +79,6 @@ router.get('/blog/:id', async (req, res) => {
   });
 })
 
-// INSERT NEW DATA
-router.post('/blog', async (req, res) => {
-  var {title, desc} = req.body
-  if(!title || !desc){
-    return res.status(422).json({status: 0, message : "Required all fields"})
-  }
-  var date = moment().format('DD-MM-YYYY');
-  var time = moment().format('hh:mm:ss')
-
-  const body = {
-    title: title,
-    desc : desc,
-    date : date
-  };
-
-  try {
-    const inserted = await Blogs.create(body);
-    var info = {
-      status : 1,
-      message: "data inserted",
-      data : inserted
-    }
-    res.json(info);
-  } catch (err) {
-    console.error('inserted err', err);
-  }
-})
-
-// UPDATE DATA
-router.post('/update-blog', async (req, res) => {
-  var {id, title, desc} = req.body
-  if(!title || !desc || !id){
-    return res.status(422).json({status: 0, message : "Required all fields"})
-  }
-  const body = {
-    title: title,
-    desc : desc,
-  };
-  const resp = await Blogs.findOneAndUpdate({_id :id}, body);
-  res.json({status: 1, message: "Updated successfully", data: resp});
-})
-
 module.exports = router
 
 

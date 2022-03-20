@@ -3,6 +3,7 @@ const router = express.Router();
 const moment = require('moment-timezone');
 const mongoose = require('mongoose');
 const sha1 = require('sha1');
+const jwt = require('jsonwebtoken')
 
 const adminSchema = require('../schema/admin');
 const Admin = mongoose.model('admins', adminSchema);
